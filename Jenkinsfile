@@ -2,7 +2,9 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "yogi93676/automated-node-app"
+        DOCKER_USERNAME = "yogi93676"
+        IMAGE_NAME = "automated-node-app"
+        IMAGE = "${DOCKER_USERNAME}/${IMAGE_NAME}"
         TAG = "latest"
     }
 
@@ -16,13 +18,17 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:$TAG .'
+                sh '''
+                docker build -t $IMAGE:$TAG .
+                '''
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                sh 'docker push $IMAGE_NAME:$TAG'
+                sh '''
+                docker push $IMAGE:$TAG
+                '''
             }
         }
 
@@ -31,10 +37,25 @@ pipeline {
                 sh '''
                 docker stop automated-node-app || true
                 docker rm automated-node-app || true
-                docker run -d -p 3000:3000 --name automated-node-app $IMAGE_NAME:$TAG
+
+                docker run -d \
+                -p 3000:3000 \
+                --name automated-node-app \
+                $IMAGE:$TAG
                 '''
             }
         }
+
+        stage('Show Image URL') {
+            steps {
+                sh '''
+                echo "Docker Hub URL:"
+                echo "https://hub.docker.com/r/$IMAGE"
+                '''
+            }
+        }
+
     }
 }
+
 
