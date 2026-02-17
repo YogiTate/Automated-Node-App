@@ -3,7 +3,7 @@
 This is a Node.js application with a complete CI/CD pipeline using Docker, Jenkins, and GitHub. The application is containerized using Docker and deployed automatically.
 
 ## Technologies Used
-
+* Linux
 * Node.js
 * Docker
 * Jenkins
